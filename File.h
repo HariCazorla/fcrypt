@@ -3,6 +3,10 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+/**
+ * Class to mimic File operations 
+ * RAII principle is used to manage cleanup
+ */
 class File
 {
     private:
@@ -11,11 +15,42 @@ class File
         FILE *pFile;
 
     public:
+        /**
+        * Constructor 
+        * @Param filePath - complete file path
+        * @Param mode - fopen mode
+        */ 
         File(const char* filePath, const char* mode);
+
+        /**
+         * Wrapper function to perform fread
+         * @Param size - Indicates the number bytes to be read
+         * @Return int - total number of bytes read 
+         */ 
         int read(int size);
+
+        /**
+         * Wrapper function to perform fwrite
+         * @Param size - Indicates the number bytes to be read
+         * @Return int - total number of bytes read 
+         */
         int write(int size);
+
+        /**
+         * Wrapper function to perform fclose
+         * @Return void
+         */
         void close();
+
+        /**
+         * Wrapper function to perform fstat and fetch file size
+         * @Return Long - Total size of file in bytes
+         */
         long size();
+
+        /**
+         * Destructor
+         */ 
         ~File();
 };
 
