@@ -7,22 +7,22 @@
  */
 class Buffer
 {
-    private:
-        char* buffer;
+private:
+    char *buffer;
 
-    public:
+public:
     /**
-        * Constructor 
-        * @Param size - total buffer size
-        */ 
-        Buffer(int size);
+    * Constructor 
+    * @Param size - total buffer size
+    */
+    Buffer(int size);
 
-        friend class File;
+    friend class File;
 
-        /**
-         * Destructor
-         */
-        ~Buffer();
+    /**
+    * Destructor
+    */
+    ~Buffer();
 };
 
 #endif
