@@ -10,7 +10,7 @@ Buffer::Buffer(int size)
     buffer = (char *)malloc(size);
     if ((buffer == NULL) || (errno > 0))
     {
-        cout << "Failed to allocate buffer" << endl;
+        throw Exception(MALLOC_FAILED);
     }
 }
 

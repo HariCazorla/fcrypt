@@ -3,8 +3,10 @@
 
 enum
 {
-    FAILED_TO_OPEN_FILE = 1,
-    FAILED_TO_ALLOCATE_BUFFER = 2
+    FILE_OPEN_FAILED = 1,
+    MALLOC_FAILED = 2,
+    INVALID_FILE = 3,
+    READ_FAILED = 4
 };
 
 /**

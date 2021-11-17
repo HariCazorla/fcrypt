@@ -2,6 +2,7 @@
 #define __FILE_H__
 #include "stdio.h"
 #include "stdlib.h"
+#include "Buffer.h"
 
 /**
  * Class to mimic File operations 
@@ -9,49 +10,49 @@
  */
 class File
 {
-    private:
-        const char* pFilePath;
-        const char* pMode;
-        FILE *pFile;
+private:
+    const char *pFilePath;
+    const char *pMode;
+    FILE *pFile;
 
-    public:
-        /**
+public:
+    /**
         * Constructor 
         * @Param filePath - complete file path
         * @Param mode - fopen mode
-        */ 
-        File(const char* filePath, const char* mode);
+        */
+    File(const char *filePath, const char *mode);
 
-        /**
+    /**
          * Wrapper function to perform fread
          * @Param size - Indicates the number bytes to be read
          * @Return int - total number of bytes read 
-         */ 
-        int read(int size);
+         */
+    int read(int size, Buffer &buffer);
 
-        /**
+    /**
          * Wrapper function to perform fwrite
          * @Param size - Indicates the number bytes to be read
          * @Return int - total number of bytes read 
          */
-        int write(int size);
+    int write(int size);
 
-        /**
+    /**
          * Wrapper function to perform fclose
          * @Return void
          */
-        void close();
+    void close();
 
-        /**
+    /**
          * Wrapper function to perform fstat and fetch file size
          * @Return Long - Total size of file in bytes
          */
-        long size();
+    long size();
 
-        /**
+    /**
          * Destructor
-         */ 
-        ~File();
+         */
+    ~File();
 };
 
 #endif
