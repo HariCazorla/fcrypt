@@ -11,48 +11,50 @@
 class File
 {
 private:
-    const char *pFilePath;
-    const char *pMode;
-    FILE *pFile;
+     const char *pFilePath;
+     const char *pMode;
+     FILE *pFile;
 
 public:
-    /**
+     /**
         * Constructor 
         * @Param filePath - complete file path
         * @Param mode - fopen mode
         */
-    File(const char *filePath, const char *mode);
+     File(const char *filePath, const char *mode);
 
-    /**
+     /**
          * Wrapper function to perform fread
          * @Param size - Indicates the number bytes to be read
+         * @Param Buffer - Indicates the buffer
          * @Return int - total number of bytes read 
          */
-    int read(int size, Buffer &buffer);
+     int read(int size, Buffer &buffer);
 
-    /**
+     /**
          * Wrapper function to perform fwrite
          * @Param size - Indicates the number bytes to be read
-         * @Return int - total number of bytes read 
+         * @Param Buffer - Indicates the buffer
+         * @Return int - total number of bytes written 
          */
-    int write(int size);
+     int write(int size, Buffer &buffer);
 
-    /**
+     /**
          * Wrapper function to perform fclose
          * @Return void
          */
-    void close();
+     void close();
 
-    /**
+     /**
          * Wrapper function to perform fstat and fetch file size
          * @Return Long - Total size of file in bytes
          */
-    long size();
+     long size();
 
-    /**
+     /**
          * Destructor
          */
-    ~File();
+     ~File();
 };
 
 #endif
