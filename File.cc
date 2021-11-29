@@ -21,7 +21,9 @@ File::File(const char *path, const char *mode)
 int File::read(int size, Buffer &buffer)
 {
     if (pFile == NULL)
+    {
         throw Exception(INVALID_FILE);
+    }
 
     int read = 0;
     read = fread(buffer.buffer, 1, size, pFile);
@@ -36,9 +38,21 @@ int File::read(int size, Buffer &buffer)
     return read;
 }
 
-int File::write(int size)
+int File::write(int size, Buffer &buffer)
 {
-    return 0;
+    if (pFile == NULL)
+    {
+        throw Exception(INVALID_FILE);
+    }
+
+    int write = fwrite(buffer.buffer, 1, size, pFile);
+    // if write bytes is not equal to size, throw exception
+    if (write != size)
+    {
+        throw Exception(WRITE_FAILED);
+    }
+
+    return write;
 }
 
 void File::close()

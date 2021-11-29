@@ -15,12 +15,24 @@ const char *Exception::getMessage()
     const char *msg = "";
     switch (errorCode)
     {
-    case FAILED_TO_ALLOCATE_BUFFER:
-        msg = "Failed to allocate\n";
+    case MALLOC_FAILED:
+        msg = "Failed to allocate buffer\n";
         break;
 
-    case FAILED_TO_OPEN_FILE:
+    case FILE_OPEN_FAILED:
         msg = "Failed to open the file\n";
+        break;
+
+    case INVALID_FILE:
+        msg = "File handle invalid\n";
+        break;
+
+    case READ_FAILED:
+        msg = "Failed to read file\n";
+        break;
+
+    case WRITE_FAILED:
+        msg = "Failed to write to file\n";
         break;
 
     default:
