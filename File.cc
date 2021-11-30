@@ -3,6 +3,7 @@
 #include "cerrno"
 #include "Exception.h"
 #include "iostream"
+#include "sys/stat.h"
 
 using namespace std;
 
@@ -66,7 +67,14 @@ void File::close()
 
 long File::size()
 {
-    return 0;
+    long fileSize = 0;
+    struct stat fileStats;
+    int ret = stat(pFilePath, &fileStats);
+    {
+        throw Exception(FAILED_TO_GET_FILE_INFORMATION);
+    }
+    fileSize = fileStats.st_size;
+    return fileSize;
 }
 
 File::~File()

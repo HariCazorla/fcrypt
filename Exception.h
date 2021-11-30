@@ -7,7 +7,8 @@ enum
     MALLOC_FAILED = 2,
     INVALID_FILE = 3,
     READ_FAILED = 4,
-    WRITE_FAILED = 5
+    WRITE_FAILED = 5,
+    FAILED_TO_GET_FILE_INFORMATION = 6
 };
 
 /**
