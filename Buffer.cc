@@ -7,7 +7,7 @@ using namespace std;
 
 Buffer::Buffer(int size)
 {
-    buffer = (char *)malloc(size);
+    buffer = (unsigned char *)malloc(size);
     if ((buffer == NULL) || (errno > 0))
     {
         throw Exception(MALLOC_FAILED);

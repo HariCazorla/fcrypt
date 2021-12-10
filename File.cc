@@ -4,6 +4,9 @@
 #include "Exception.h"
 #include "iostream"
 #include "sys/stat.h"
+#include "openssl/conf.h"
+#include "openssl/evp.h"
+#include "openssl/err.h"
 
 using namespace std;
 
@@ -75,6 +78,31 @@ long File::size()
     }
     fileSize = fileStats.st_size;
     return fileSize;
+}
+
+int File::encryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer, bool isFinal)
+{
+    int len;
+    int ciphertextLength;
+    if (1 != EVP_EncryptUpdate((EVP_CIPHER_CTX *)ctx, outBuffer.buffer, &len, inBuffer.buffer, size))
+    {
+        ERR_print_errors_fp(stderr);
+        abort();
+    }
+    ciphertextLength = len;
+    if (isFinal)
+    {
+        if (1 != EVP_EncryptFinal_ex((EVP_CIPHER_CTX *)ctx, outBuffer.buffer + len, &len))
+        {
+            ERR_print_errors_fp(stderr);
+            abort();
+        }
+        ciphertextLength += len;
+    }
+    cout << "Encrypted " << ciphertextLength << " bytes" << endl;
+    BIO_dump_fp(stdout, (const char *)outBuffer.buffer, ciphertextLength);
+    cout << endl;
+    return ciphertextLength;
 }
 
 File::~File()

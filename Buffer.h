@@ -8,20 +8,20 @@
 class Buffer
 {
 private:
-    char *buffer;
+    unsigned char *buffer;
 
 public:
     /**
-    * Constructor 
-    * @Param size - total buffer size
-    */
+     * Constructor
+     * @Param size - total buffer size
+     */
     Buffer(int size);
 
     friend class File;
 
     /**
-    * Destructor
-    */
+     * Destructor
+     */
     ~Buffer();
 };
 
