@@ -52,7 +52,7 @@ public:
     long size();
 
     /**
-     * Wrapper function to perform fwrite
+     * Wrapper function to perform encryption
      * @Param ctx - void pointer to EVP_CIPHER_CTX
      * @Param size - size of buffer to be encrypted
      * @Param inBuffer - buffer block to be encrypted
@@ -61,6 +61,17 @@ public:
      * @Return int - size of encrypted block 16 bytes aligned
      */
     int encryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer, bool isFinal);
+
+    /**
+     * Wrapper function to perform decryption
+     * @Param ctx - void pointer to EVP_CIPHER_CTX
+     * @Param size - size of buffer to be decrypted
+     * @Param inBuffer - buffer block to be decrypted
+     * @Param outBuffer - buffer to store decrypted block
+     * @Param isFinal - flag to indicate last block of file
+     * @Return int - size of decrypted block 16 bytes aligned
+     */
+    int decryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer, bool isFinal);
 
     /**
      * Destructor
