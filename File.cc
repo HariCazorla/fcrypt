@@ -109,20 +109,12 @@ int File::decryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer,
 {
     int len;
     int plaintext_len;
-    /*
-     * Provide the message to be decrypted, and obtain the plaintext output.
-     * EVP_DecryptUpdate can be called multiple times if necessary.
-     */
     if (1 != EVP_DecryptUpdate((EVP_CIPHER_CTX *)ctx, outBuffer.buffer, &len, inBuffer.buffer, size))
     {
         ERR_print_errors_fp(stderr);
         abort();
     }
     plaintext_len = len;
-    /*
-     * Finalise the decryption. Further plaintext bytes may be written at
-     * this stage.
-     */
     if (isFinal)
     {
         if (1 != EVP_DecryptFinal_ex((EVP_CIPHER_CTX *)ctx, outBuffer.buffer + len, &len))
