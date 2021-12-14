@@ -14,7 +14,7 @@ int main(const int argc, const char **argv)
     string ckey = "01234567890123456789012345678901";
     string ivec = "0123456789012345";
     string mode = "e";
-    if (argc != 5)
+    if (argc != 6)
     {
         cout << "Interactive mode..." << endl;
         cout << "Enter source file name..." << endl;
@@ -27,6 +27,14 @@ int main(const int argc, const char **argv)
         cin >> ivec;
         cout << "Choose e for encryption / d for decryption..." << endl;
         cin >> mode;
+    }
+    else
+    {
+        inFileName = argv[1];
+        outFileName = argv[2];
+        ckey = argv[3];
+        ivec = argv[4];
+        mode = argv[5];
     }
     if (inFileName.length() == 0 || outFileName.length() == 0)
     {
@@ -69,14 +77,17 @@ int main(const int argc, const char **argv)
         {
             Buffer inBuffer(BUFFER_SIZE);
             Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
-            if (sourceFile.read(BUFFER_SIZE, inBuffer) == BUFFER_SIZE)
+            read = sourceFile.read(BUFFER_SIZE, inBuffer);
+            if (read == BUFFER_SIZE)
             {
+                cout << "Reading..." << endl;
                 s = sourceFile.encryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
                 destinationFile.write(s, outBuffer);
             }
             else
             {
-                s = sourceFile.encryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, true);
+                cout << "Reading last block..." << endl;
+                s = sourceFile.encryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
                 destinationFile.write(s, outBuffer);
                 break;
             }
@@ -86,6 +97,31 @@ int main(const int argc, const char **argv)
     if (strcmp(mode.c_str(), "d") == 0)
     {
         cout << "Starting Decryption..." << endl;
+        if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *)ckey.c_str(), (const unsigned char *)ivec.c_str()))
+        {
+            ERR_print_errors_fp(stderr);
+            abort();
+        }
+
+        while (true)
+        {
+            Buffer inBuffer(BUFFER_SIZE);
+            Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
+            read = sourceFile.read(BUFFER_SIZE, inBuffer);
+            if (read == BUFFER_SIZE)
+            {
+                cout << "Reading..." << endl;
+                s = sourceFile.decryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
+                destinationFile.write(s, outBuffer);
+            }
+            else
+            {
+                cout << "Reading last block..." << endl;
+                s = sourceFile.decryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
+                destinationFile.write(s, outBuffer);
+                break;
+            }
+        }
         return 0;
     }
     /* Clean up */
