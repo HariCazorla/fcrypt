@@ -8,7 +8,9 @@ enum
     INVALID_FILE = 3,
     READ_FAILED = 4,
     WRITE_FAILED = 5,
-    FAILED_TO_GET_FILE_INFORMATION = 6
+    FAILED_TO_GET_FILE_INFORMATION = 6,
+    ENC_ERROR = 7,
+    DEC_ERROR = 8
 };
 
 /**
@@ -21,21 +23,21 @@ private:
 
 public:
     /**
-    * Constructor 
-    * @Param int - error code
-    */
+     * Constructor
+     * @Param int - error code
+     */
     Exception(int errorCode);
 
     /**
-    * Function to return appropriate error message based on error code
-    * @Return char* - error message 
-    */
+     * Function to return appropriate error message based on error code
+     * @Return char* - error message
+     */
     const char *getMessage();
 
     /**
-    * Function to return appropriate error code
-    * @Return int - error message 
-    */
+     * Function to return appropriate error code
+     * @Return int - error message
+     */
     int getErrno();
 };
 
