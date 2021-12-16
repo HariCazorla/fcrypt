@@ -35,6 +35,14 @@ const char *Exception::getMessage()
         msg = "Failed to write to file\n";
         break;
 
+    case ENC_ERROR:
+        msg = "Failed to Encrypt block\n";
+        break;
+
+    case DEC_ERROR:
+        msg = "Failed to Decrypt block\n";
+        break;
+
     default:
         msg = "Unexpected failure\n";
         break;

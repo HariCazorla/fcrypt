@@ -86,16 +86,14 @@ int File::encryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer,
     int ciphertextLength;
     if (1 != EVP_EncryptUpdate((EVP_CIPHER_CTX *)ctx, outBuffer.buffer, &len, inBuffer.buffer, size))
     {
-        ERR_print_errors_fp(stderr);
-        abort();
+        throw Exception(ENC_ERROR);
     }
     ciphertextLength = len;
     if (isFinal)
     {
         if (1 != EVP_EncryptFinal_ex((EVP_CIPHER_CTX *)ctx, outBuffer.buffer + len, &len))
         {
-            ERR_print_errors_fp(stderr);
-            abort();
+            throw Exception(ENC_ERROR);
         }
         ciphertextLength += len;
     }
@@ -111,16 +109,14 @@ int File::decryptBlock(void *ctx, int size, Buffer &inBuffer, Buffer &outBuffer,
     int plaintext_len;
     if (1 != EVP_DecryptUpdate((EVP_CIPHER_CTX *)ctx, outBuffer.buffer, &len, inBuffer.buffer, size))
     {
-        ERR_print_errors_fp(stderr);
-        abort();
+        throw Exception(DEC_ERROR);
     }
     plaintext_len = len;
     if (isFinal)
     {
         if (1 != EVP_DecryptFinal_ex((EVP_CIPHER_CTX *)ctx, outBuffer.buffer + len, &len))
         {
-            ERR_print_errors_fp(stderr);
-            abort();
+            throw Exception(DEC_ERROR);
         }
         plaintext_len += len;
     }
