@@ -10,7 +10,8 @@ enum
     WRITE_FAILED = 5,
     FAILED_TO_GET_FILE_INFORMATION = 6,
     ENC_ERROR = 7,
-    DEC_ERROR = 8
+    DEC_ERROR = 8,
+    OPENSSL_INIT_ERROR = 9
 };
 
 /**
