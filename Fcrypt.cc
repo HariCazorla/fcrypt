@@ -4,6 +4,7 @@
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <string.h>
+#include "Exception.h"
 #define BUFFER_SIZE 128
 using namespace std;
 
@@ -64,66 +65,72 @@ int main(const int argc, const char **argv)
     }
 
     int cipherBlockSize = EVP_CIPHER_block_size(EVP_aes_256_cbc());
-    if (strcmp(mode.c_str(), "e") == 0)
+    try
     {
-        cout << "Starting Encryption..." << endl;
+        /* code */
+        if (strcmp(mode.c_str(), "e") == 0)
+        {
+            cout << "Starting Encryption..." << endl;
 
-        if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *)ckey.c_str(), (const unsigned char *)ivec.c_str()))
-        {
-            ERR_print_errors_fp(stderr);
-            abort();
-        }
-        while (true)
-        {
-            Buffer inBuffer(BUFFER_SIZE);
-            Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
-            read = sourceFile.read(BUFFER_SIZE, inBuffer);
-            if (read == BUFFER_SIZE)
+            if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *)ckey.c_str(), (const unsigned char *)ivec.c_str()))
             {
-                cout << "Reading..." << endl;
-                s = sourceFile.encryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
-                destinationFile.write(s, outBuffer);
+                throw Exception(OPENSSL_INIT_ERROR);
             }
-            else
+            while (true)
             {
-                cout << "Reading last block..." << endl;
-                s = sourceFile.encryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
-                destinationFile.write(s, outBuffer);
-                break;
+                Buffer inBuffer(BUFFER_SIZE);
+                Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
+                read = sourceFile.read(BUFFER_SIZE, inBuffer);
+                if (read == BUFFER_SIZE)
+                {
+                    cout << "Reading..." << endl;
+                    s = sourceFile.encryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
+                    destinationFile.write(s, outBuffer);
+                }
+                else
+                {
+                    cout << "Reading last block..." << endl;
+                    s = sourceFile.encryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
+                    destinationFile.write(s, outBuffer);
+                    break;
+                }
+            }
+        }
+
+        if (strcmp(mode.c_str(), "d") == 0)
+        {
+            cout << "Starting Decryption..." << endl;
+            if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *)ckey.c_str(), (const unsigned char *)ivec.c_str()))
+            {
+                throw Exception(OPENSSL_INIT_ERROR);
+            }
+
+            while (true)
+            {
+                Buffer inBuffer(BUFFER_SIZE);
+                Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
+                read = sourceFile.read(BUFFER_SIZE, inBuffer);
+                if (read == BUFFER_SIZE)
+                {
+                    cout << "Reading..." << endl;
+                    s = sourceFile.decryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
+                    destinationFile.write(s, outBuffer);
+                }
+                else
+                {
+                    cout << "Reading last block..." << endl;
+                    s = sourceFile.decryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
+                    destinationFile.write(s, outBuffer);
+                    break;
+                }
             }
         }
     }
-
-    if (strcmp(mode.c_str(), "d") == 0)
+    catch (Exception &e)
     {
-        cout << "Starting Decryption..." << endl;
-        if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char *)ckey.c_str(), (const unsigned char *)ivec.c_str()))
-        {
-            ERR_print_errors_fp(stderr);
-            abort();
-        }
-
-        while (true)
-        {
-            Buffer inBuffer(BUFFER_SIZE);
-            Buffer outBuffer(BUFFER_SIZE + cipherBlockSize);
-            read = sourceFile.read(BUFFER_SIZE, inBuffer);
-            if (read == BUFFER_SIZE)
-            {
-                cout << "Reading..." << endl;
-                s = sourceFile.decryptBlock((void *)ctx, BUFFER_SIZE, inBuffer, outBuffer, false);
-                destinationFile.write(s, outBuffer);
-            }
-            else
-            {
-                cout << "Reading last block..." << endl;
-                s = sourceFile.decryptBlock((void *)ctx, read, inBuffer, outBuffer, true);
-                destinationFile.write(s, outBuffer);
-                break;
-            }
-        }
-        return 0;
+        cout << e.getMessage();
     }
+
     /* Clean up */
     EVP_CIPHER_CTX_free(ctx);
     return 0;
